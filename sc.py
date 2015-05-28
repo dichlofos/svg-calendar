@@ -124,9 +124,11 @@ class SvgCalendar:
         for day_no in c.itermonthdays (self.year, month_no):
 
             day_of_week = (day_of_week + 1) % 7
-            if day_of_week == 0: week_no += 1
+            if day_of_week == 0:
+                week_no += 1
 
-            if day_no == 0: continue # month not yet started
+            if day_no == 0:
+                continue # month not yet started
 
             xx = x + self.style['day-width'] * (day_of_week)
             yy = y + self.style['day-padding-top'] + week_no * self.style['day-height']
@@ -155,7 +157,7 @@ class SvgCalendar:
         svg = ''
         svg += '<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'
         svg += '<svg width="%smm" height="%smm" version="1.1" xmlns="http://www.w3.org/2000/svg"><desc>Calendar 2009</desc>' % (self.style['width'], self.style['height'])
-        svg += '<g><rect x="0" y="0" width="%smm" height="%smm" rx="2.5mm" fill="#fff" stroke="%s" storke-width="0.5mm"/></g>' % (self.style['width'], self.style['height'], self.style['border-color'])
+        svg += '<g><rect x="0" y="0" width="%smm" height="%smm" rx="2.5mm" fill="#fff" stroke="%s" stroke-width="0.5mm"/></g>' % (self.style['width'], self.style['height'], self.style['border-color'])
         svg += self.render_year (self.style['year-padding-left'], 0)
         svg += '</svg>'
         return svg
