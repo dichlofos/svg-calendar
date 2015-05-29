@@ -1,4 +1,5 @@
 #!/usr/bin/python
+# coding: utf-8
 
 __author__    = "Anatoly Rr (anatoly.rr@gmail.com)"
 __version__   = "2010"
@@ -65,8 +66,8 @@ class SvgCalendar:
 
         self.year_name = "0x" + hex(year)[2:].upper()
         self.month_names = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '0A', '0B', '0C']
-        self.weekdays_names = ['001', '010', '011', '100', '101', '110', '111']
-        self.days_names = ["%02x" % (i + 1) for i in range(32)]
+        self.weekdays_names = ['П', '010', '011', '100', '101', '110', '111']
+        self.days_names = ["%2d" % (i + 1) for i in range(32)]
 
         # tuples (month, day)
         self.holidays = [(1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 7), (2, 23), (3, 8), (4, 4), (5, 1), (5, 9), (6, 12), (9, 13), (11, 4)]
@@ -75,26 +76,27 @@ class SvgCalendar:
         self.not_holidays = [] # [ (1,11) ]
 
 
-    def is_holiday (self, month, day, day_of_week):
+    def is_holiday(self, month, day, day_of_week):
 
         if day_of_week in [5, 6]:
             return (month, day) not in self.not_holidays
         return (month, day) in self.holidays
 
 
-    def render_day (self, x, y, month, day, day_of_week):
+    def render_day(self, x, y, month, day, day_of_week):
         svg = ''
         if self.is_holiday (month, day,  day_of_week):
             color = self.style ['day-holiday-color']
         else:
             color = self.style ['day-color']
+        svg += '<g><rect x="%smm" y="%smm" width="%smm" height="%smm" rx="1mm" fill="#fff" stroke="#00ff00" stroke-width="0.3mm"/></g>' % (x-0.1*self.style['day-width'], y-0.5*self.style['day-width'], self.style['day-width'], self.style['day-height'])
         svg += '<text x="%smm" y="%smm" font-family="\'%s\'" font-size="%smm" fill="%s" text-anchor="middle">'% (x + 0.5*self.style['day-width'], y, self.style['day-font-family'], self.style['day-font-size'], color)
         svg += '%s' % self.days_names [day-1]
         svg += '</text>'
         return svg
 
 
-    def render_week (self, x, y):
+    def render_week(self, x, y):
         svg = ''
         svg += '<g>'
         for i in range (7):
@@ -108,14 +110,14 @@ class SvgCalendar:
         svg += '</g>'
         return svg
 
-    def render_month (self, x,y, month_no):
+    def render_month(self, x, y, month_no):
         svg = ''
 
         svg += '<g>'
         svg += '<text x="%smm" y="%smm" font-family="\'%s\'" font-size="%smm" text-anchor="middle" fill="%s">'% (x + self.style['month-width']/2,y+self.style['month-padding-top'], self.style['month-font-family'], self.style['month-font-size'], self.style['month-color'])
         svg += '%s' % (self.month_names [month_no-1])
         svg += '</text>'
-        svg += self.render_week (x, y+self.style['week-padding-top'])
+        #svg += self.render_week (x, y+self.style['week-padding-top'])
 
         day_of_week = -1 # will start from Monday
         week_no = 0
@@ -138,14 +140,25 @@ class SvgCalendar:
         svg += '</g>'
         return svg
 
+    def render_2months(self, x, y, month_no):
+        svg = ''
+        svg += '<g>'
+        for i in range(2):
+            xx = 0
+            yy = i
+            svg += self.render_month (x+ xx*self.style['month-width'] + xx*self.style['month-margin-right'], y + self.style['month-offset-top']+ yy*self.style['month-height'] + yy*self.style['month-margin-bottom'], i+1)
+        svg += '</g>'
+        return svg
 
-    def render_year (self, x, y):
+
+
+    def render_year(self, x, y):
         svg = ''
         svg += '<g>'
         svg += '<text x="%smm" y="%smm" font-family="\'%s\'" font-size="%smm" text-anchor="middle" fill="%s">'% (x + self.style['width']/2,y+self.style['year-padding-top'], self.style['year-font-family'], self.style['year-font-size'], self.style['year-color'])
         svg += self.year_name
         svg += '</text>'
-        for i in range (12):
+        for i in range(12):
             xx = i % 4
             yy = i / 4
             svg += self.render_month (x+ xx*self.style['month-width'] + xx*self.style['month-margin-right'], y + self.style['month-offset-top']+ yy*self.style['month-height'] + yy*self.style['month-margin-bottom'], i+1)
@@ -153,18 +166,14 @@ class SvgCalendar:
         return svg
 
 
-    def render (self):
+    def render(self):
         svg = ''
         svg += '<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'
         svg += '<svg width="%smm" height="%smm" version="1.1" xmlns="http://www.w3.org/2000/svg"><desc>Calendar 2009</desc>' % (self.style['width'], self.style['height'])
         svg += '<g><rect x="0" y="0" width="%smm" height="%smm" rx="2.5mm" fill="#fff" stroke="%s" stroke-width="0.5mm"/></g>' % (self.style['width'], self.style['height'], self.style['border-color'])
-        svg += self.render_year (self.style['year-padding-left'], 0)
+        svg += self.render_month(self.style['year-padding-left'], 0, 5)
         svg += '</svg>'
         return svg
-
-
-
-
 
 
 if __name__ == '__main__':
@@ -181,7 +190,7 @@ if __name__ == '__main__':
         c.style.update ({
             'units'  : 'mm',
 
-            'border-color' : '#fff',
+            'border-color' : '#ff0000',
 
             'width'  : 297,
             'height' : 210,
@@ -190,25 +199,25 @@ if __name__ == '__main__':
             'year-padding-left': 2 * k,
             'year-font-size'   : 5 * k,
 
-            'month-width'  : 21 * k ,
-            'month-height' : 20 * k,
+            'month-width'  : 81 * k ,
+            'month-height' : 80 * k,
 
-            'day-width'  : 22.0 * k / 7.0,
-            'day-height' : 10.0 * k / 5.0,
+            'day-width'  : 96.0 * k / 7.0,
+            'day-height' : 50.0 * k / 5.0,
 
             'month-margin-right' : 9,
             'month-margin-bottom' : 1,
 
-            'month-font-size' : 3 * k,
-            'month-padding-top' : 5 * k ,
+            'month-font-size' : 2 * k,
+            'month-padding-top' : 3 * k ,
 
-            'month-offset-top' : 6 * k,
+            'month-offset-top' : 4 * k,
 
             'week-padding-top' : 9 * k,
             'week-font-size'   : 1.5 * k,
 
-            'day-padding-top' : 10 * k,
-            'day-font-size'   : 2 * k,
+            'day-padding-top' : 3 * k,
+            'day-font-size'   : 1 * k,
         })
         print c.render()
 
