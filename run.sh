@@ -1,2 +1,4 @@
 #!/usr/bin/env bash
-python ./sc.py > cal.svg
+for i in $(seq 1 12); do
+    python ./sc.py $i > cal$i.svg
+done

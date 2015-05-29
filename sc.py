@@ -9,6 +9,7 @@ __license__   = "GPL"
 
 
 from calendar import Calendar # used in render_month
+import sys
 
 class SvgCalendar:
 
@@ -65,7 +66,7 @@ class SvgCalendar:
 
 
         self.year_name = "0x" + hex(year)[2:].upper()
-        self.month_names = ['Январь', 'Февраль', 'Март', '04', 'Май', '06', '07', '08', '09', '0A', '0B', '0C']
+        self.month_names = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сеньтябрь', 'Октябрь', 'Ноябрь', 'Декабрь']
         self.weekdays_names = ['П', '010', '011', '100', '101', '110', '111']
         self.days_names = ["%2d" % (i + 1) for i in range(32)]
 
@@ -89,8 +90,19 @@ class SvgCalendar:
             color = self.style ['day-holiday-color']
         else:
             color = self.style ['day-color']
-        svg += '<g><rect x="%smm" y="%smm" width="%smm" height="%smm" rx="3mm" fill="#fff" stroke="#9f9f9f" stroke-width="0.3mm"/></g>' % (x-0.1*self.style['day-width'], y-0.5*self.style['day-width'], self.style['day-width'], self.style['day-height'])
-        svg += '<text x="%smm" y="%smm" font-family="\'%s\'" font-weight="bold" font-size="%smm" fill="%s" text-anchor="middle">'% (x + 0.75*self.style['day-width'], y+0.15*self.style['day-width'], self.style['day-font-family'], self.style['day-font-size'], color)
+        svg += '<g><rect x="%smm" y="%smm" width="%smm" height="%smm" rx="3mm" fill="#fff" stroke="#9f9f9f" stroke-width="0.3mm"/></g>' % (
+            x - 0.1*self.style['day-width'],
+            y-0.5*self.style['day-width'],
+            self.style['day-width'],
+            self.style['day-height'],
+        )
+        svg += '<text x="%smm" y="%smm" font-family="\'%s\'" font-weight="bold" font-size="%smm" fill="%s" text-anchor="middle">' % (
+            x + 0.75*self.style['day-width'],
+            y + 0.28*self.style['day-width'],
+            self.style['day-font-family'],
+            self.style['day-font-size'],
+            color,
+        )
         svg += '%s' % self.days_names [day-1]
         svg += '</text>'
         return svg
@@ -169,9 +181,9 @@ class SvgCalendar:
     def render(self):
         svg = ''
         svg += '<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">'
-        svg += '<svg width="%smm" height="%smm" version="1.1" xmlns="http://www.w3.org/2000/svg"><desc>Calendar 2009</desc>' % (self.style['width'], self.style['height'])
+        svg += '<svg width="%smm" height="%smm" version="1.1" xmlns="http://www.w3.org/2000/svg"><desc>Calendar 2015</desc>' % (self.style['width'], self.style['height'])
         svg += '<g><rect x="0" y="0" width="%smm" height="%smm" rx="2.5mm" fill="#fff" stroke="%s" stroke-width="0.5mm"/></g>' % (self.style['width'], self.style['height'], self.style['border-color'])
-        svg += self.render_month(self.style['year-padding-left'], 0, 5)
+        svg += self.render_month(self.style['year-padding-left'], 0, int(sys.argv[1]))
         svg += '</svg>'
         return svg
 
@@ -190,7 +202,7 @@ if __name__ == '__main__':
         c.style.update ({
             'units'  : 'mm',
 
-            'border-color' : '#ff0000',
+            'border-color' : '#fff',
 
             'width'  : 270,
             'height' : 210,
@@ -203,20 +215,20 @@ if __name__ == '__main__':
             'month-height' : 80 * k,
 
             'day-width'  : 88.0 * k / 7.0,
-            'day-height' : 50.0 * k / 5.0,
+            'day-height' : 54.0 * k / 5.0,
 
             'month-margin-right' : 9,
             'month-margin-bottom' : 1,
 
             'month-font-size' : 2 * k,
-            'month-padding-top' : 3 * k ,
+            'month-padding-top' : 3 * k,
 
-            'month-offset-top' : 4 * k,
+            'month-offset-top' : 2 * k,
 
             'week-padding-top' : 9 * k,
             'week-font-size'   : 1.5 * k,
 
-            'day-padding-top' : 3 * k,
+            'day-padding-top' : 0 * k,
             'day-font-size'   : 2 * k,
         })
         print c.render()
