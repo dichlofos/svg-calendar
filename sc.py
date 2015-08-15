@@ -110,13 +110,13 @@ class SvgCalendar:
             color = self.style ['day-color']
         svg += '<g><rect x="%smm" y="%smm" width="%smm" height="%smm" rx="3mm" fill="#fff" stroke="#9f9f9f" stroke-width="0.3mm"/></g>' % (
             x - 0.1*self.style['day-width'],
-            y-0.5*self.style['day-width'],
+            y - 0.5*self.style['day-width'],
             self.style['day-width'],
             self.style['day-height'],
         )
-        svg += '<text x="%smm" y="%smm" font-family="\'%s\'" font-weight="bold" font-size="%smm" fill="%s" text-anchor="middle">' % (
-            x + 0.75*self.style['day-width'],
-            y + 0.28*self.style['day-width'],
+        svg += '<text x="%smm" y="%smm" font-family="\'%s\'" font-weight="bold" font-size="%smm" fill="%s" text-anchor="right">' % (
+            x + 0.52*self.style['day-width'],
+            y + 0.29*self.style['day-width'],
             self.style['day-font-family'],
             self.style['day-font-size'],
             color,
@@ -129,14 +129,14 @@ class SvgCalendar:
     def render_week(self, x, y):
         svg = ''
         svg += '<g>'
-        for i in range (7):
+        for i in range(7):
             if i < 5:
                 color = self.style['week-color']
             else:
                 color = self.style['week-holiday-color']
             svg += (
                 '<text x="%smm" y="%smm" font-family="\'%s\'" font-size="%smm" text-anchor="middle" fill="%s">' %
-                (x + (i +0.5)* self.style['day-width'],y, self.style['week-font-family'], self.style['week-font-size'], color)
+                (x + (i + 0.5)* self.style['day-width'],y, self.style['week-font-family'], self.style['week-font-size'], color)
             )
             svg += '%s' % (self.weekdays_names [i])
             svg += '</text>'
@@ -269,7 +269,7 @@ if __name__ == '__main__':
             'week-font-size'   : 1.5 * k,
 
             'day-padding-top' : 0 * k,
-            'day-font-size'   : 2 * k,
+            'day-font-size'   : 3 * k,
         })
         print c.render()
 
