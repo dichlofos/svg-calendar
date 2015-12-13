@@ -223,14 +223,17 @@ class SvgCalendar:
             '<g><rect x="0" y="0" width="%smm" height="%smm" rx="2.5mm" fill="#fff" stroke="%s" stroke-width="0.5mm"/></g>' %
             (self.style['width'], self.style['height'], self.style['border-color'])
         )
-        svg += self.render_month(self.style['year-padding-left'], 0, int(sys.argv[1]))
+        svg += self.render_month(self.style['year-padding-left'], 0, int(sys.argv[2]))
         svg += '</svg>'
         return svg
 
 
 if __name__ == '__main__':
+    if len(sys.argv) < 3:
+        print "Usage: sc.py <year> <month>"
+        sys.exit(1)
 
-    c = SvgCalendar(2015)
+    c = SvgCalendar(int(sys.argv[1]))
 
     # normal
     if False:
